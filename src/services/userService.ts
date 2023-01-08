@@ -1,12 +1,13 @@
 import userRepository, { UserValues } from "../repositories/userRepository";
-import { conflictError } from "../errors/errors";
+import { conflictError, unauthorizedError } from "../errors/errors";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
+import { Product } from "@prisma/client";
 
 dotenv.config();
 
-async function createUser(values: UserValues) {
+async function createUser(values: UserValues, role: number) {
   const user = await userRepository.findUserByEmail(values.email);
 
   if (user) {
@@ -16,12 +17,16 @@ async function createUser(values: UserValues) {
   const password = bcrypt.hashSync(values.password, 12);
   const lastLogin = new Date();
 
+  if (role < 2 || values.role > role) {
+    throw unauthorizedError("You do not have permission");
+  }
+
   await userRepository.createUser({ ...values, password, lastLogin });
 
   return;
 }
 
-async function validateSignIn(values: UserValues) {
+async function signIn(values: UserValues) {
   const user = await userRepository.findUserByEmail(values.email);
 
   if (!user) {
@@ -34,11 +39,15 @@ async function validateSignIn(values: UserValues) {
     throw conflictError("Invalid email or password");
   }
 
-  const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, {
-    expiresIn: 86400,
-  });
+  const token = jwt.sign(
+    { id: user.id, role: user.role },
+    process.env.JWT_SECRET as string,
+    {
+      expiresIn: 86400,
+    }
+  );
 
   return { token };
 }
 
-export default { createUser, validateSignIn };
+export default { createUser, signIn };

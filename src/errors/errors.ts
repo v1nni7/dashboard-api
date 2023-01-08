@@ -5,4 +5,11 @@ function conflictError(message: string) {
   };
 }
 
-export { conflictError };
+function unauthorizedError(message: string) {
+  return {
+    status: 401,
+    message: message,
+  };
+}
+
+export { conflictError, unauthorizedError };
