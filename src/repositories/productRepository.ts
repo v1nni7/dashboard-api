@@ -5,7 +5,7 @@ export type ProductValues = Omit<Product, "id">;
 
 async function createProduct(values: ProductValues) {
   return await prisma.product.create({
-    data: values,
+    data: { ...values, rating: 0 },
   });
 }
 

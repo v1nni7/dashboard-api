@@ -1,14 +1,18 @@
 import { faker } from "@faker-js/faker";
-import jwt from "jsonwebtoken";
 import request from "supertest";
 import app from "../src/app";
 import { createUser, createUserAdmin } from "./factories/userFactory";
 import { generateToken } from "./helpers/authenticationHelper";
+import { cleanUsers } from "./helpers/databaseHelper";
 
 const server = request(app);
 
+beforeEach(async () => {
+  await cleanUsers();
+});
+
 describe("POST /users/sign-up", () => {
-  describe("when body tests are invalid", () => {
+  describe("when the user body is invalid", () => {
     const invalidUser = {
       name: "",
       email: faker.internet.email(),
@@ -40,12 +44,12 @@ describe("POST /users/sign-up", () => {
     });
   });
 
-  describe("when the user does not have permission", () => {
-    const newUser = {
+  describe("when the user body is valid", () => {
+    const user = {
       name: faker.name.fullName(),
       email: faker.internet.email(),
       password: faker.internet.password(),
-      role: 4,
+      role: 0,
     };
 
     it("should return 401 if user is not allowed to create users", async () => {
@@ -54,7 +58,7 @@ describe("POST /users/sign-up", () => {
 
       const response = await server
         .post("/users/sign-up")
-        .send(newUser)
+        .send(user)
         .set({ authorization: `Bearer ${token}` });
 
       expect(response.status).toBe(401);
@@ -66,10 +70,22 @@ describe("POST /users/sign-up", () => {
 
       const response = await server
         .post("/users/sign-up")
-        .send(newUser)
+        .send({ ...user, role: 4 })
         .set({ authorization: `Bearer ${token}` });
 
       expect(response.status).toBe(401);
+    });
+
+    it("should return 201 if user created sucessfully", async () => {
+      const userAdmin = await createUserAdmin();
+      const token = await generateToken(userAdmin);
+
+      const response = await server
+        .post("/users/sign-up")
+        .send(user)
+        .set({ authorization: `Bearer ${token}` });
+
+      expect(response.status).toBe(201);
     });
   });
 });

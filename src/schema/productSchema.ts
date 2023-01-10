@@ -7,9 +7,8 @@ const createProductSchema: ObjectSchema = Joi.object({
   category: Joi.string().required(),
   image: Joi.string().required(),
   code: Joi.string().required(),
-  price: Joi.number().required(),
-  rating: Joi.number().required(),
-  stock: Joi.number().required(),
+  price: Joi.number().min(1).required(),
+  stock: Joi.number().min(1).required(),
 });
 
 export { createProductSchema };

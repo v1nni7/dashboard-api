@@ -8,8 +8,8 @@ const productRouter = Router();
 
 productRouter.post(
   "/create",
-  validateTokenMiddleware,
   validateSchemaMiddleware(createProductSchema),
+  validateTokenMiddleware,
   productController.createProduct
 );
 
