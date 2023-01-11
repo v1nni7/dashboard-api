@@ -9,12 +9,16 @@ async function createProduct(values: ProductValues) {
   });
 }
 
-async function findProductByName(name: string) {
+async function findProductByCode(code: string) {
   return await prisma.product.findMany({
     where: {
-      name,
+      code,
     },
   });
 }
 
-export default { createProduct };
+async function getAllProducts() {
+  return prisma.product.findMany();
+}
+
+export default { createProduct, findProductByCode, getAllProducts };

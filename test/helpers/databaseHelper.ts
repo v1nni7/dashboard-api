@@ -4,4 +4,8 @@ async function cleanUsers() {
   await prisma.user.deleteMany({});
 }
 
-export { cleanUsers };
+async function cleanProducts() {
+  await prisma.user.deleteMany({});
+}
+
+export { cleanUsers, cleanProducts };

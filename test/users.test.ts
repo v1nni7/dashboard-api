@@ -54,7 +54,7 @@ describe("POST /users/sign-up", () => {
 
     it("should return 401 if user is not allowed to create users", async () => {
       const userNotAllowed = await createUser();
-      const token = generateToken(userNotAllowed);
+      const token = await generateToken(userNotAllowed);
 
       const response = await server
         .post("/users/sign-up")
@@ -66,7 +66,7 @@ describe("POST /users/sign-up", () => {
 
     it("should return 401 if user has try create top level user role", async () => {
       const userAdmin = await createUserAdmin();
-      const token = generateToken(userAdmin);
+      const token = await generateToken(userAdmin);
 
       const response = await server
         .post("/users/sign-up")

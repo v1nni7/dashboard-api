@@ -4,7 +4,7 @@ import { Request, Response, NextFunction } from "express";
 
 dotenv.config();
 
-function validateTokenMiddleware(
+async function validateTokenMiddleware(
   req: Request,
   res: Response,
   next: NextFunction

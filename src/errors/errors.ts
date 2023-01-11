@@ -12,4 +12,11 @@ function unauthorizedError(message: string) {
   };
 }
 
-export { conflictError, unauthorizedError };
+function notFoundError(message: string) {
+  return {
+    status: 404,
+    message: message,
+  };
+}
+
+export { conflictError, unauthorizedError, notFoundError };

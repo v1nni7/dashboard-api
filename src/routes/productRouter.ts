@@ -13,4 +13,10 @@ productRouter.post(
   productController.createProduct
 );
 
+productRouter.get(
+  "/",
+  validateTokenMiddleware,
+  productController.getAllProduts
+);
+
 export default productRouter;

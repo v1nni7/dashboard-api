@@ -30,7 +30,7 @@ model Product {
   brand       String
   category    String
   image       String
-  code        String
+  code        String   @unique
   price       Float
   rating      Float
   stock       Int
