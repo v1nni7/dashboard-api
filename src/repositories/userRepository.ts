@@ -9,6 +9,14 @@ async function createUser(values: UserValues) {
   });
 }
 
+async function findUserById(id: number) {
+  return await prisma.user.findFirst({
+    where: {
+      id,
+    },
+  });
+}
+
 async function findUserByEmail(email: string) {
   return await prisma.user.findFirst({
     where: {
@@ -17,4 +25,16 @@ async function findUserByEmail(email: string) {
   });
 }
 
-export default { createUser, findUserByEmail };
+async function getUsers() {
+  return await prisma.user.findMany();
+}
+
+async function deleteUser(id: number) {
+  return await prisma.user.delete({
+    where: {
+      id,
+    },
+  });
+}
+
+export default { createUser, findUserById, findUserByEmail, getUsers, deleteUser };

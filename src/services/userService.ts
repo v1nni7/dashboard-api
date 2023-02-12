@@ -43,11 +43,37 @@ async function signIn(values: UserValues) {
     { id: user.id, role: user.role },
     process.env.JWT_SECRET as string,
     {
-      expiresIn: 86400,
+      expiresIn: 86400 * 7,
     }
   );
 
-  return { token };
+  return { token, id: user.id, role: user.role };
 }
 
-export default { createUser, signIn };
+async function getUsers() {
+  const users = await userRepository.getUsers();
+
+  return users;
+}
+
+async function deleteUser(id: number, role: number, userId: number) {
+  const userToBeDeleted = await userRepository.findUserById(id);
+
+  if (!userToBeDeleted) {
+    throw conflictError("User not found");
+  }
+
+  if (userToBeDeleted?.id === userId) {
+    throw conflictError("You cannot delete yourself");
+  }
+
+  if (role < 3 || userToBeDeleted.role > role || userId === id) {
+    throw unauthorizedError("You do not have permission");
+  }
+
+  await userRepository.deleteUser(id);
+
+  return { message: `User #${id} has been deleted` };
+}
+
+export default { createUser, signIn, getUsers, deleteUser };

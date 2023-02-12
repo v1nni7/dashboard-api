@@ -19,4 +19,8 @@ userRouter.post(
   userController.signIn
 );
 
+userRouter.get("/list", validateTokenMiddleware, userController.getUsers);
+
+userRouter.delete("/delete/:id", validateTokenMiddleware, userController.deleteUser);
+
 export default userRouter;

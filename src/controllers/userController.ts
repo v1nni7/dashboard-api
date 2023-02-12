@@ -28,4 +28,29 @@ async function signIn(req: Request, res: Response) {
   }
 }
 
-export default { createUser, signIn };
+async function getUsers(req: Request, res: Response) {
+  try {
+    const users = await userService.getUsers();
+
+    res.status(200).send(users);
+  } catch (error) {
+    res.status(500).send("Internal server error");
+  }
+}
+
+async function deleteUser(req: Request, res: Response) {
+  try {
+    const { id } = req.params;
+    const { role, userId } = res.locals;
+
+    const response = await userService.deleteUser(Number(id), role, userId);
+
+    res.status(200).send(response);
+  } catch (error: any) {
+    res
+      .status(error.status || 500)
+      .send(error.message || "Internal server error");
+  }
+}
+
+export default { createUser, signIn, getUsers, deleteUser };
