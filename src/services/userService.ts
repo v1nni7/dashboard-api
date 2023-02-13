@@ -39,6 +39,8 @@ async function signIn(values: UserValues) {
     throw conflictError("Invalid email or password");
   }
 
+  await userRepository.updateUser(user.id, { ...user, lastLogin: new Date() });
+
   const token = jwt.sign(
     { id: user.id, role: user.role },
     process.env.JWT_SECRET as string,

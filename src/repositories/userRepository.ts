@@ -37,4 +37,20 @@ async function deleteUser(id: number) {
   });
 }
 
-export default { createUser, findUserById, findUserByEmail, getUsers, deleteUser };
+async function updateUser(id: number, values: UserValues) {
+  return prisma.user.update({
+    where: {
+      id,
+    },
+    data: values,
+  });
+}
+
+export default {
+  findUserById,
+  findUserByEmail,
+  getUsers,
+  createUser,
+  deleteUser,
+  updateUser,
+};
